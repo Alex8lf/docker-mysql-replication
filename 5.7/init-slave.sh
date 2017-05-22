@@ -7,6 +7,8 @@
 
 REPLICATION_HEALTH_GRACE_PERIOD=${REPLICATION_HEALTH_GRACE_PERIOD:-3}
 REPLICATION_HEALTH_TIMEOUT=${REPLICATION_HEALTH_TIMEOUT:-10}
+NUMBER_OF_ATTEMPTS=${NUMBER_OF_ATTEMPTS:-10}
+REPEAT_TIMEOUT=${tREPEAT_TIMEOUT:-10}
 
 check_slave_health () {
   echo Checking replication health:
@@ -23,6 +25,9 @@ check_slave_health () {
 
 
 echo Updating master connetion info in slave.
+
+mysqladmin ping --host=$MASTER_HOST --port=$MASTER_PORT -u root -s\
+ --wait=$REPEAT_TIMEOUT -w$NUMBER_OF_ATTEMPTS
 
 mysql -u root -e "RESET MASTER; \
   CHANGE MASTER TO \
